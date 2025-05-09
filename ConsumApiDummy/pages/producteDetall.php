@@ -1,5 +1,6 @@
 <?php
-include("../includes/header.php");
+include("../includes/header.html");
+include("../includes/errorHandler.php");
 
 if (isset($_GET["id"])) {
     $id = intval($_GET["id"]); // Asegúrate que es un número
@@ -9,10 +10,10 @@ if (isset($_GET["id"])) {
     $data = json_decode($response, true);
 
     if ($data && is_array($data)) {
-        echo "<div class='character-detail-container'>";
-        echo "<h2>" . htmlspecialchars($data["title"]) . "</h2>";
-        echo "<img src='" . htmlspecialchars($data["thumbnail"]) . "' alt='" . htmlspecialchars($data["title"]) . "' style='max-width:200px;'><br>";
-        echo "<ul>";
+        echo "<div class='product-detail-container'>";
+        echo "<h2 class='product-title'>" . htmlspecialchars($data["title"]) . "</h2>";
+        echo "<img src='" . htmlspecialchars($data["thumbnail"]) . "' alt='" . htmlspecialchars($data["title"]) . "' class='product-image'><br>";
+        echo "<ul class='product-info-list'>";
         echo "<li><strong>Categoría:</strong> " . htmlspecialchars($data["category"]) . "</li>";
         echo "<li><strong>Descripción:</strong> " . htmlspecialchars($data["description"]) . "</li>";
         echo "<li><strong>Precio:</strong> $" . htmlspecialchars($data["price"]) . "</li>";
@@ -20,7 +21,7 @@ if (isset($_GET["id"])) {
         echo "<li><strong>Stock disponible:</strong> " . htmlspecialchars($data["stock"]) . "</li>";
         echo "</ul>";
         echo "<div class='text-center'>";
-        echo "<a href='javascript:history.back()' class='back-link'>← Volver</a>"; // Para volver a la anterior
+        echo "<a href='javascript:history.back()' class='back-button'>← Volver</a>"; // Para volver a la anterior
         echo "</div>";
         echo "</div>";
     } else {
@@ -30,5 +31,5 @@ if (isset($_GET["id"])) {
     echo "<p>ID inválido.</p>";
 }
 
-include("../includes/footer.php");
+include("../includes/footer.html");
 ?>
