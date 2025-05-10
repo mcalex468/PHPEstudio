@@ -27,13 +27,13 @@ if ($data && is_object($data)) {
     <input type="hidden" name="id" value="<?php echo $jokeId; ?>">
 
     <label for="author">Autor:</label>
-    <input type="text" name="author" id="author" value="<?php echo $author; ?>" required><br>
+    <input type="text" name="author" id="author" value="<?php echo $author; ?>"><br>
 
     <label for="joke">Chiste:</label>
-    <textarea name="joke" id="joke" required><?php echo $joke; ?></textarea><br>
+    <textarea name="joke" id="joke"><?php echo $joke; ?></textarea><br>
 
     <label for="source">Fuente:</label>
-    <input type="text" name="source" id="source" value="<?php echo $source; ?>"required><br>
+    <input type="text" name="source" id="source" value="<?php echo $source; ?>"><br>
 
     <input type="submit" value="Actualizar">
 </form>

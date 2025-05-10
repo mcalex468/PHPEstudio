@@ -29,8 +29,15 @@ if (curl_errno($ch)) {
 } else {
     // Decodificar la respuesta JSON
     $json_response = json_decode($response, true);
-    echo "✅ Chiste creado con éxito:<br>";
-    echo "<pre>" . print_r($json_response, true) . "</pre>"; // Mostrar la respuesta
+
+    if (isset($json_response['id'])) {
+        // Redirigir a gestionJoke.php con el ID del chiste creado
+        header("Location: gestionJoke.php?id=" . $json_response['id']);
+        exit;
+    } else {
+        echo "❌ Chiste creado, pero no se recibió un ID válido.";
+        echo "<pre>" . print_r($json_response, true) . "</pre>";
+    }
 }
 
 // Cerrar la conexión cURL
