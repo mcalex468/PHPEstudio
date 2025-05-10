@@ -1,3 +1,7 @@
+<?php
+include("../includes/header.php");
+include("../includes/errorHandler.proc.php");
+?>
 <h2>POST NEW JOKE</h2>
 <form action="postJoke.proc.php" method="POST">
     <label for="author">Author:</label>

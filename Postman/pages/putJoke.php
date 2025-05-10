@@ -1,4 +1,7 @@
 <?php
+include("../includes/header.php");
+include("../includes/errorHandler.proc.php");
+
 // Obtener el ID del chiste desde la URL
 $jokeId = $_GET['id'];
 
