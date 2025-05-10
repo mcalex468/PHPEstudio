@@ -2,83 +2,85 @@
 include '../includes/errorHandler.proc.php';
 include '../includes/dbConnect.proc.php';
 
-// Peticions GET
-if($_SERVER['$_REQUEST_METHOD'] == 'GET') {
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
-    // Retornar totes les categories
-    if(isset($_GET['categoria']) && $_GET['categoria'] === 'all'){
-        $resultat = $db->query("SELECT DISTINCT(categoria) FROM llibres ORDER BY categoria");
+    // Obtener categorías únicas
+    if (isset($_GET['categoria']) && $_GET['categoria'] === 'all') {
+        $resultat = $db->query("SELECT DISTINCT categoria FROM llibres ORDER BY categoria");
         $categorias = [];
-        while ($categoria = $resultat->fetchArray(SQLITE3_ASSOC)){
-            $categorias[] = $categoria['categoria'];
+        while ($row = $resultat->fetchArray(SQLITE3_ASSOC)) {
+            $categorias[] = $row['categoria'];
         }
-             //header('Content-Type: application/json');
-            echo json_encode($categorias);
+        echo json_encode($categorias);
+        exit;
     }
 
-    // Retornar tots els LLIBRES d'una CATEGORIA
-    if(isset($_GET['categoria'])){
+    // Obtener libros por categoría
+    if (isset($_GET['categoria'])) {
         $stmt = $db->prepare("SELECT * FROM llibres WHERE categoria = :cat ORDER BY titol");
         $stmt->bindValue(':cat', $_GET['categoria'], SQLITE3_TEXT);
         $result = $stmt->execute();
         $llibres = [];
-        while ($llibres = $result->fetchArray(SQLITE3_ASSOC)){
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
             $llibres[] = [
-                "id" => $llibres['id'],
-                "titol" => $llibres['titol'],
-                "autor" => $llibres['autor'],
-                "any" => $llibres['any'],
-                "categoria" => $llibres['categoria'],
-                "isbn" => $llibres['isbn'],
+                "id" => $row['id'],
+                "titol" => $row['titol'],
+                "autor" => $row['autor'],
+                "any" => $row['any'],
+                "categoria" => $row['categoria'],
+                "isbn" => $row['isbn'],
                 "rating" => [
-                    "rate" => $llibres['rating.rate'],
-                    "count" => $llibres['rating.count']
+                    "rate" => $row['rating.rate'],
+                    "count" => $row['rating.count']
                 ]
             ];
         }
-        //header('Content-Type: application/json');
         echo json_encode($llibres);
+        exit;
+    }
 
-    // Retornar un producte concret
-    } else if(isset($_GET['id'])){
+    // Obtener libro por ID
+    if (isset($_GET['id'])) {
         $stmt = $db->prepare("SELECT * FROM llibres WHERE id = :id");
-        $stmt->bindValue(':id',$_GET['id'],SQLITE3_TEXT);
+        $stmt->bindValue(':id', $_GET['id'], SQLITE3_INTEGER);
         $result = $stmt->execute();
-        $llibre = [];
-        if ($llibre = $result->fetchArray(SQLITE3_ASSOC)){
+        if ($row = $result->fetchArray(SQLITE3_ASSOC)) {
             $llibre = [
-                 "id" => $llibres['id'],
-                "titol" => $llibres['titol'],
-                "autor" => $llibres['autor'],
-                "any" => $llibres['any'],
-                "categoria" => $llibres['categoria'],
-                "isbn" => $llibres['isbn'],
+                "id" => $row['id'],
+                "titol" => $row['titol'],
+                "autor" => $row['autor'],
+                "any" => $row['any'],
+                "categoria" => $row['categoria'],
+                "isbn" => $row['isbn'],
                 "rating" => [
-                    "rate" => $llibres['rating.rate'],
-                    "count" => $llibres['rating.count']
+                    "rate" => $row['rating.rate'],
+                    "count" => $row['rating.count']
                 ]
             ];
+            echo json_encode($llibre);
+        } else {
+            echo json_encode(["error" => "Llibre no trobat"]);
         }
-         //header('Content-Type: application/json');
-        echo json_encode($llibre);
-    } else {
-        $result = $db->query("SELECT * FROM llibres ORDER BY titol");
-        $llibres = [];
-        while ($llibres = $result->fetchArray(SQLITE3_ASSOC)){
-            $llibres[] = [
-                "id" => $llibres['id'],
-                "titol" => $llibres['titol'],
-                "autor" => $llibres['autor'],
-                "any" => $llibres['any'],
-                "categoria" => $llibres['categoria'],
-                "isbn" => $llibres['isbn'],
-                "rating" => [
-                    "rate" => $llibres['rating.rate'],
-                    "count" => $llibres['rating.count']
-                ]
-            ];
-        }
-        //header('Content-Type: application/json');
-        echo json_encode($llibres); 
-    } 
+        exit;
+    }
+
+    // Obtener todos los libros
+    $result = $db->query("SELECT * FROM llibres ORDER BY titol");
+    $llibres = [];
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $llibres[] = [
+            "id" => $row['id'],
+            "titol" => $row['titol'],
+            "autor" => $row['autor'],
+            "any" => $row['any'],
+            "categoria" => $row['categoria'],
+            "isbn" => $row['isbn'],
+            "rating" => [
+                "rate" => $row['rating.rate'],
+                "count" => $row['rating.count']
+            ]
+        ];
+    }
+    echo json_encode($llibres);
 }
+?>
