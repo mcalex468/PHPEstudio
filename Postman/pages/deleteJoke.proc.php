@@ -1,7 +1,7 @@
 <?php
 // Verifica si se ha enviado el ID a eliminar
-if (isset($_POST['id']) && !empty($_POST['id'])) {
-    $id = $_POST['id']; // Obtener el ID a eliminar
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+    $id = $_GET['id']; // Obtener el ID a eliminar
 
     // URL de la API para eliminar el chiste por su ID
     $url = "https://api101.up.railway.app/joke/$id";
