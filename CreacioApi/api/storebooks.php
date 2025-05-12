@@ -137,6 +137,83 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
      $stmt->bindValue(':rate', $input['rating.rate'], SQLITE3_FLOAT);
      $stmt->bindValue(':count', $input['rating.count'], SQLITE3_INTEGER);
     }
-}
+    // PETICIÓ PATCH
+} else if($_SERVER['REQUEST_METHOD'] == 'PATCH'){
+      $input = json_decode(file_get_contents('php://input'), true);
 
+      if(isset($input['id'])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Falta l'identificador del llibre"]);
+      }
+
+      $llibre_id = $input['id'];
+      $setFields = [];
+      $params = [];
+
+      if(isset($input['titol'])) {
+        $setFields[] = "titol = :titol";
+        $params['titol'] = $input['titol'];
+      }
+      if(isset($input['autor'])) {
+        $setFields[] = "autor = :autor";
+        $params['autor'] = $input['autor'];
+      }
+      if(isset($input['any'])) {
+        $setFields[] = "any = :any";
+        $params['any'] = $input['any'];
+      }
+      if(isset($input['categoria'])) {
+        $setFields[] = "categoria = :categoria";
+        $params['categoria'] = $input['categoria'];
+      }
+      if(isset($input['isbn'])) {
+        $setFields[] = "isbn = :isbn";
+        $params['isbn'] = $input['isbn'];
+      }
+      if(count($setFields) > 0){
+        $sql = "UPDATE llibres SET " . implode(",", $setFields) . "WHERE id = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id',$llibre_id, SQLITE3_INTEGER);
+
+        // Asignar els parametres dinamicament
+        foreach ($params as $key => $value) {
+            $stmt->bindValue(':' . $key, $value, is_numeric($value) ? SQLITE3_FLOAT : SQLITE3_TEXT);
+        }
+
+        if ($stmt->execute()) {
+            http_response_code(200);
+            echo json_encode(["success" => "Llibre modificat correctament"]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["error" => "Error al modificar el llibre"]);
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode(["error" => "No s'han proporcionat dades per actualitzar"]);
+      }
+
+      // PETICIÓ DELETE
+} else if($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+    $id = $_GET['id'] ?? null;
+    if($id == null) {
+        parse_str(file_get_contents("php://input"), $params);
+        $id = $params['id'] ?? null;
+    }
+    if($id != null) {
+       $stmt = $db->prepare("DELETE FROM llibres WHERE id = :id");
+       $stmt->bindValue(':id',$id,SQLITE3_INTEGER);
+       if($stmt->execute()){
+        echo json_encode(["succes" => "Llibre s'ha pogut eliminar"]);
+       } else {
+         http_response_code(500);
+         echo json_encode(["error" => "No s'ha pogut eliminar el llibre"]);
+       }
+    } else {
+        http_response_code(500);
+        echo json_encode(["error" => "Falta l'identificadror del llibre"]);
+    }
+} else {
+    http_response_code(400);
+    echo json_encode(["error" => "Petició no acceptada"]);
+} 
 ?>
