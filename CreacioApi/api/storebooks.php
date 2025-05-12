@@ -2,9 +2,10 @@
 include '../includes/errorHandler.proc.php';
 include '../includes/dbConnect.proc.php';
 
+    // PETICIONS GET
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
-    // Obtener categorías únicas
+    // Obtenir categories uniques
     if (isset($_GET['categoria']) && $_GET['categoria'] === 'all') {
         $resultat = $db->query("SELECT DISTINCT categoria FROM llibres ORDER BY categoria");
         $categories = [];
@@ -15,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         exit;
     }
 
-    // Obtener libros por categoría
+    // Obtenir llibres per categoria
     if (isset($_GET['categoria'])) {
         $stmt = $db->prepare("SELECT * FROM llibres WHERE categoria = :cat ORDER BY titol");
         $stmt->bindValue(':cat', $_GET['categoria'], SQLITE3_TEXT);
@@ -38,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         echo json_encode($llibres);
         exit;
 
-    // Obtener libro por ID
+    // Obtenir llibre per ID
   } else if (isset($_GET['id'])) {
     $stmt = $db->prepare("SELECT * FROM llibres WHERE id = :id");
     $stmt->bindValue(':id', $_GET['id'], SQLITE3_INTEGER);
@@ -64,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     exit;
     } else {
 
-    // Obtener todos los libros
+    // Obtenir tots els llibres
     $result = $db->query("SELECT * FROM llibres ORDER BY titol");
     $llibres = [];
     while ($llibre = $result->fetchArray(SQLITE3_ASSOC)) {
@@ -83,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
     echo json_encode($llibres);
 }
-
+    // PETICIÓ POST
 }  else if($_SERVER['REQUEST_METHOD'] == 'POST') {
      $input = json_decode(file_get_contents('php://input'), true);
 
@@ -110,7 +111,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         http_response_code(400);
         echo json_encode(["error" => "Falten camps obligatoris"]);
     }
+    // PETICIÓ PUT
 } else if($_SERVER['REQUEST_METHOD'] == 'PUT'){
+    $input = json_decode(file_get_contents('php://input'), true);
 
+    // Verificar el ID
+    if(!isset($input['id'])){
+        http_response_code(400);
+        echo json_encode(["error" => "Falta l'identificador del producte"]);
+        exit;
+     }
+     // Obtenir el ID de la solicitud
+     $llibre_id = $input['id'];
+
+    if(isset($input['titol']) && isset($input['autor']) && isset($input['any']) && isset($input['categoria']) 
+    && isset($input['isbn']) && isset($input['rating.rate']) && isset($input['rating.count'])) {
+     // Preparacio consulta modificació Llibre
+     $stmt = $db->prepare("UPDATE llibres SET titol = :titol, autor = :autor, any = :any , categoria = :categoria, isbn = :isbn WHERE id = :id");
+     $stmt->bindValue(':id',$llibre_id, SQLITE3_INTEGER);
+     $stmt->bindValue(':titol', $input['titol'], SQLITE3_TEXT);
+     $stmt->bindValue(':autor', $input['autor'], SQLITE3_TEXT);
+     $stmt->bindValue(':any', $input['any'], SQLITE3_INTEGER);
+     $stmt->bindValue(':categoria', $input['categoria'], SQLITE3_TEXT);
+     $stmt->bindValue(':isbn', $input['isbn'], SQLITE3_TEXT);
+     $stmt->bindValue(':rate', $input['rating.rate'], SQLITE3_FLOAT);
+     $stmt->bindValue(':count', $input['rating.count'], SQLITE3_INTEGER);
+    }
 }
+
 ?>
