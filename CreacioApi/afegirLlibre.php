@@ -62,8 +62,10 @@ include("includes/menu.php");
       any: parseInt(document.getElementById("any").value),
       categoria: categoria,
       isbn: document.getElementById("isbn").value,
-      "rating.rate": parseFloat(document.getElementById("rate").value),
-      "rating.count": parseInt(document.getElementById("count").value)
+      rating: {
+        rate: parseFloat(document.getElementById("rate").value),
+        count: parseInt(document.getElementById("count").value)
+      }
     };
 
     fetch("api/storebooks.php", {
