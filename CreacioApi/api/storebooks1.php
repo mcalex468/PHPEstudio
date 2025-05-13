@@ -1,7 +1,8 @@
 <?php
+// Conexión a la base de datos (se crea si no existe)
 $db = new SQLite3('storebooks.db');
 
-// Crear la tabla (eliminar si ya existe)
+// Eliminar la tabla si ya existe y crearla de nuevo
 $db->exec("DROP TABLE IF EXISTS llibres");
 $db->exec("CREATE TABLE llibres (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -10,13 +11,13 @@ $db->exec("CREATE TABLE llibres (
     any INTEGER,
     categoria TEXT,
     isbn TEXT,
-    'rating.rate' REAL,
-    'rating.count' INTEGER
+    rating_rate REAL,
+    rating_count INTEGER
 )");
 
-// Insertar múltiples libros agrupados en solo 4 categorías
+// Insertar datos en la tabla
 $db->exec("
-    INSERT INTO llibres (titol, autor, any, categoria, isbn, 'rating.rate', 'rating.count') VALUES
+    INSERT INTO llibres (titol, autor, any, categoria, isbn, rating_rate, rating_count) VALUES
     -- Ficción
     ('Cien años de soledad', 'Gabriel García Márquez', 1967, 'Ficción', '9788497592208', 4.8, 950),
     ('1984', 'George Orwell', 1949, 'Ficción', '9780451524935', 4.6, 1200),
@@ -38,5 +39,5 @@ $db->exec("
     ('Crónica de una muerte anunciada', 'Gabriel García Márquez', 1981, 'Misterio', '9788497592437', 4.3, 500)
 ");
 
-echo "📚 Base de datos creada con 12 libros y 4 categorías.\n";
+echo "📚 Base de datos creada con 12 libros, campos rating_rate y rating_count corregidos.\n";
 ?>
