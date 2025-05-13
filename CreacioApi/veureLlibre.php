@@ -33,7 +33,6 @@ if (!isset($_REQUEST['id']) || $_REQUEST['id'] == "") {
         const div = document.createElement("div");
         div.className = "llibre";
         div.innerHTML = `
-          <img src="${llibre.image}" alt="Imatge del llibre">
           <div class="llibre-info">
             <h4>${llibre.titol}</h4>
             <p class="autor">Autor: ${llibre.autor}</p>

@@ -66,7 +66,7 @@ include("includes/menu.php");
       "rating.count": parseInt(document.getElementById("count").value)
     };
 
-    fetch("api/productes.php", {
+    fetch("api/storebooks.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -76,7 +76,7 @@ include("includes/menu.php");
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        window.location.href = `veureProductesCategoria.php?categoria=${encodeURIComponent(categoria)}`;
+        window.location.href = `veureCategoriesLlibres.php?categoria=${encodeURIComponent(categoria)}`;
       } else {
         document.getElementById("resposta").innerHTML = `<p style="color: red;">${data.error}</p>`;
       }

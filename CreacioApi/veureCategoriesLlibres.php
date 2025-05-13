@@ -42,7 +42,6 @@ include("includes/menu.php");
           const div = document.createElement("div");
           div.className = "llibre-mini";
           div.innerHTML = `
-            <img src="${llibre.image}" alt="Imatge del llibre">
             <div><a href="veureLlibre.php?id=${llibre.id}">${llibre.titol}</a></div>
             <div class="autor">Autor: ${llibre.autor}</div>
             <div class="any">Any de publicació: ${llibre.any}</div>

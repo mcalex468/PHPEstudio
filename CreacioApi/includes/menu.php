@@ -4,9 +4,9 @@
         </a>
     </div>
     <div class="links">
-        <a href="index.php">Pàgina principal</a>
-        <a href="veureCategoriesLlibres.php?categoria=totes">Veure productes</a>
-        <a href="gestionarLlibres.php">Gestionar productes</a>
+        <a href="../CreacioApi/index.php">Pàgina principal</a>
+        <a href="../CreacioApi/veureCategoriesLlibres.php?categoria=totes">Veure llibres</a>
+        <a href="../CreacioApi/gestionarLlibres.php">Gestionar llibres</a>
     </div>
 </nav>
 <p></p>

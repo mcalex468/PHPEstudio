@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if(isset($input['titol']) && isset($input['autor']) && isset($input['any']) && isset($input['categoria']) 
     && isset($input['isbn']) && isset($input['rating.rate']) && isset($input['rating.count'])) {
      // Preparacio consulta modificació Llibre
-     $stmt = $db->prepare("UPDATE llibres SET titol = :titol, autor = :autor, any = :any , categoria = :categoria, isbn = :isbn WHERE id = :id");
+     $stmt = $db->prepare("UPDATE llibres SET titol = :titol, autor = :autor, any = :any , categoria = :categoria, isbn = :isbn, `rating.rate` = :rate, `rating.count` = :count WHERE id = :id");
      $stmt->bindValue(':id',$llibre_id, SQLITE3_INTEGER);
      $stmt->bindValue(':titol', $input['titol'], SQLITE3_TEXT);
      $stmt->bindValue(':autor', $input['autor'], SQLITE3_TEXT);
@@ -136,15 +136,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
      $stmt->bindValue(':isbn', $input['isbn'], SQLITE3_TEXT);
      $stmt->bindValue(':rate', $input['rating.rate'], SQLITE3_FLOAT);
      $stmt->bindValue(':count', $input['rating.count'], SQLITE3_INTEGER);
+    
+     if ($stmt->execute()) {
+    http_response_code(200);
+    echo json_encode(["success" => "Llibre modificat correctament"]);
+    } else {
+      http_response_code(500);
+      echo json_encode(["error" => "Error al modificar el llibre"]);
+    }
     }
     // PETICIÓ PATCH
 } else if($_SERVER['REQUEST_METHOD'] == 'PATCH'){
       $input = json_decode(file_get_contents('php://input'), true);
 
-      if(isset($input['id'])) {
+      if(!isset($input['id'])) {
         http_response_code(400);
         echo json_encode(["error" => "Falta l'identificador del llibre"]);
-      }
+        exit;
+    }
 
       $llibre_id = $input['id'];
       $setFields = [];
@@ -170,8 +179,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $setFields[] = "isbn = :isbn";
         $params['isbn'] = $input['isbn'];
       }
+
+      if(isset($input['rating.rate'])) {
+       $setFields[] = "`rating.rate` = :rate";
+       $params['rate'] = $input['rating.rate'];
+      }
+      
+      if(isset($input['rating.count'])) {
+       $setFields[] = "`rating.count` = :count";
+       $params['count'] = $input['rating.count'];
+      }
+
       if(count($setFields) > 0){
-        $sql = "UPDATE llibres SET " . implode(",", $setFields) . "WHERE id = :id";
+        $sql = "UPDATE llibres SET " . implode(", ", $setFields) . " WHERE id = :id";
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id',$llibre_id, SQLITE3_INTEGER);
 
@@ -203,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
        $stmt = $db->prepare("DELETE FROM llibres WHERE id = :id");
        $stmt->bindValue(':id',$id,SQLITE3_INTEGER);
        if($stmt->execute()){
-        echo json_encode(["succes" => "Llibre s'ha pogut eliminar"]);
+        echo json_encode(["success" => "Llibre s'ha pogut eliminar"]);
        } else {
          http_response_code(500);
          echo json_encode(["error" => "No s'ha pogut eliminar el llibre"]);

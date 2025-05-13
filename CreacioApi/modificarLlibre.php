@@ -1,20 +1,22 @@
 <?php
 include("includes/head.html");
 include("includes/menu.php");
-include("includes/errorHandler.php");
+include("includes/errorHandler.proc.php");
 include("includes/dbConnect.proc.php");
 
-// Obtener el ID del libro desde la URL
-$book_id = $_GET['id'];
+if (!isset($_GET['id'])) {
+    die("ID no vàlid o no proporcionat.");
+}
+$book_id = $_GET['id'];  
 
-// Consultar la base de datos para obtener los detalles del libro
 $stmt = $db->prepare("SELECT * FROM llibres WHERE id = :id");
-$stmt->bindValue(':id', $book_id, SQLITE3_TEXT);
+$stmt->bindValue(':id', $book_id, SQLITE3_INTEGER);
 $result = $stmt->execute();
+
 $llibre = $result->fetchArray(SQLITE3_ASSOC);
 
 if (!$llibre) {
-    die("No se encontró el libro con ID: " . htmlspecialchars($book_id));
+    die("No s'ha trobat el llibre amb ID: " . htmlspecialchars($book_id));
 }
 ?>
 
@@ -147,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const resposta = document.getElementById("resposta");
       if (resposta) {
         console.log("Enviando solicitud con método:", method);
-        fetch("api/storebooks.php", {  // Cambié el endpoint a 'storebooks.php'
+        fetch("api/storebooks.php", { 
           method: method,
           headers: {
             "Content-Type": "application/json"
@@ -158,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
           console.log("Respuesta de la API:", data);  // Agregar esto para ver la respuesta
           if (data.success) {
-            window.location.href = `veureLlibresCategoria.php?categoria=${encodeURIComponent(categoria)}`;
+            window.location.href = `veureCategoriesLlibres.php?categoria=${encodeURIComponent(categoria)}`;
           } else {
             document.getElementById("resposta").innerHTML = `<p style="color: red;">${data.error}</p>`;
           }
