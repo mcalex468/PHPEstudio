@@ -5,8 +5,8 @@
     </div>
     <div class="links">
         <a href="index.php">Pàgina principal</a>
-        <a href="veureProductesCategoria.php?categoria=totes">Veure productes</a>
-        <a href="gestionarProductes.php">Gestionar productes</a>
+        <a href="veureCategoriesLlibres.php?categoria=totes">Veure productes</a>
+        <a href="gestionarLlibres.php">Gestionar productes</a>
     </div>
 </nav>
 <p></p>
