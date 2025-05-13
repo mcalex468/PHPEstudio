@@ -130,9 +130,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $stmt->bindValue(':any', $input['any'], SQLITE3_INTEGER);
         $stmt->bindValue(':categoria', $input['categoria'], SQLITE3_TEXT);
         $stmt->bindValue(':isbn', $input['isbn'], SQLITE3_TEXT);
-        $stmt->bindValue(':rate', $input['rating']['rate'], SQLITE3_FLOAT);
-        $stmt->bindValue(':count', $input['rating']['count'], SQLITE3_INTEGER);
-
+        $stmt->bindValue(':rate', $input['rating_rate'], SQLITE3_FLOAT);
+        $stmt->bindValue(':count', $input['rating_count'], SQLITE3_INTEGER);
+        
         if ($stmt->execute()) {
             http_response_code(200);
             echo json_encode(["success" => "Llibre modificat correctament"]);
@@ -163,14 +163,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         }
     }
 
-    if (isset($input['rating']['rate'])) {
+    if (isset($input['rating_rate'])) {
         $setFields[] = "rating_rate = :rate";
-        $params['rate'] = $input['rating']['rate'];
+        $params['rate'] = $input['rating_rate'];
     }
 
-    if (isset($input['rating']['count'])) {
+    if (isset($input['rating_count'])) {
         $setFields[] = "rating_count = :count";
-        $params['count'] = $input['rating']['count'];
+        $params['count'] = $input['rating_count'];
     }
 
     if (count($setFields) > 0) {

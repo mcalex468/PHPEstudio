@@ -27,26 +27,26 @@ if (!$llibre) {
     <input type="hidden" id="book_id" value="<?php echo $llibre['id']; ?>">
 
     <label for="titol">Nom:</label><br>
-    <input type="text" name="titol" id="titol" value="<?php echo $llibre['titol']; ?>" required><br><br>
+    <input type="text" name="titol" id="titol" value="<?php echo htmlspecialchars($llibre['titol']); ?>" required><br><br>
 
     <label for="autor">Autor:</label><br>
-    <input type="text" name="autor" id="autor" value="<?php echo $llibre['autor']; ?>" required><br><br>
+    <input type="text" name="autor" id="autor" value="<?php echo htmlspecialchars($llibre['autor']); ?>" required><br><br>
 
     <label for="any">Any de publicació:</label><br>
     <input type="number" name="any" id="any" value="<?php echo $llibre['any']; ?>" required><br><br>
 
     <label for="categoria">Categoria:</label><br>
-    <input list="categories" name="categoria" id="categoria" value="<?php echo $llibre['categoria']; ?>" required>
+    <input list="categories" name="categoria" id="categoria" value="<?php echo htmlspecialchars($llibre['categoria']); ?>" required>
     <datalist id="categories"></datalist><br><br>
 
     <label for="isbn">ISBN:</label><br>
-    <input type="text" name="isbn" id="isbn" value="<?php echo $llibre['isbn']; ?>" required><br><br>
+    <input type="text" name="isbn" id="isbn" value="<?php echo htmlspecialchars($llibre['isbn']); ?>" required><br><br>
 
     <label for="rating">Valoració:</label><br>
-    <input type="number" name="rating" id="rating" value="<?php echo $llibre['rating.rate']; ?>" step="0.1" min="0" max="5" required><br><br>
+    <input type="number" name="rating" id="rating" value="<?php echo $llibre['rating_rate']; ?>" step="0.1" min="0" max="5" required><br><br>
 
     <label for="rating_count">Número de valoracions:</label><br>
-    <input type="number" name="rating_count" id="rating_count" value="<?php echo $llibre['rating.count']; ?>" required><br><br>
+    <input type="number" name="rating_count" id="rating_count" value="<?php echo $llibre['rating_count']; ?>" required><br><br>
 
     <button type="submit">Modificar llibre</button>
   </form>
@@ -121,8 +121,8 @@ document.addEventListener("DOMContentLoaded", function() {
         dades.any !== originalBook.any ||
         dades.categoria !== originalBook.categoria ||
         dades.isbn !== originalBook.isbn ||
-        dades.rating.rate !== originalBook['rating.rate'] ||
-        dades.rating.count !== originalBook['rating.count']
+        dades.rating.rate !== originalBook['rating_rate'] ||
+        dades.rating.count !== originalBook['rating_count']
       ) {
         // Si hay cambios, determinar si es PUT o PATCH
         if (
@@ -131,8 +131,8 @@ document.addEventListener("DOMContentLoaded", function() {
           dades.any !== originalBook.any &&
           dades.categoria !== originalBook.categoria &&
           dades.isbn !== originalBook.isbn &&
-          dades.rating.rate !== originalBook['rating.rate'] &&
-          dades.rating.count !== originalBook['rating.count']
+          dades.rating.rate !== originalBook['rating_rate'] &&
+          dades.rating.count !== originalBook['rating_count']
         ) {
           method = 'PUT';  // Si todos los campos han cambiado, usamos PUT
         } else {
@@ -174,4 +174,4 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
 });
-</scri
+</script>
