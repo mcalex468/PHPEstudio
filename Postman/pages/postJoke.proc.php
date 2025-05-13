@@ -9,21 +9,19 @@ $data = array(
     'source' => $_REQUEST['source']  // La fuente (opcional)
 );
 
-// Inicializar cURL
+// Inicializar CURL
 $ch = curl_init($url);
 
 // Configurar la solicitud POST
-curl_setopt($ch, CURLOPT_POST, true); // Especificar que será una solicitud POST
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // Pasar los datos en formato JSON
 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); // Cabecera para indicar JSON
-
-// Configurar para que cURL devuelva la respuesta
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Configurar para que CURL devuelva la respuesta
 
 // Ejecutar la solicitud y obtener la respuesta
 $response = curl_exec($ch);
 
-// Comprobar si hay errores en la solicitud cURL
+// Comprobar si hay errores en la solicitud CURL
 if (curl_errno($ch)) {
     echo '❌ Error al realizar la solicitud: ' . curl_error($ch);
 } else {
